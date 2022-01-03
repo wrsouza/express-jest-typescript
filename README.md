@@ -1,7 +1,7 @@
 ## Initial Application with Express + Jest + Lint (TypeScript)
 
 ![build-test](https://github.com/wrsouza/express-jest-typescript/actions/workflows/build-test.yml/badge.svg)
-[![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/wrsouza/9b7d5aa0fe6ff3af0f45f9863f5e86a9/raw/express-jest-typescript__heads_master.json)]
+[![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/wrsouza/9b7d5aa0fe6ff3af0f45f9863f5e86a9/raw/express-jest-typescript__master.json)]
 
 ---
 
