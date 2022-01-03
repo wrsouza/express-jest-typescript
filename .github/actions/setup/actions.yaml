@@ -1,0 +1,5 @@
+name: "setup"
+description: "Setup NodeJs with Docker"
+run:
+  using: "Docker"
+  image: "Dockerfile"
