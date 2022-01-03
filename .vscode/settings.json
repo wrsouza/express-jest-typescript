@@ -1,0 +1,20 @@
+{
+  "workbench.colorTheme": "Omni",
+  "editor.fontFamily": "JetBrains Mono",
+  "editor.fontSize": 16,
+  "editor.fontLigatures": true,
+  "editor.renderWhitespace": "boundary",
+  "editor.tabSize": 2,
+  "explorer.autoReveal": false,
+  "terminal.integrated.fontSize": 16,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.alwaysShowStatus": true,
+  "explorer.confirmDelete": false,
+  "workbench.iconTheme": "material-icon-theme",
+  "security.workspace.trust.untrustedFiles": "open",
+  "window.zoomLevel": 0,
+  "explorer.compactFolders": false,
+}
