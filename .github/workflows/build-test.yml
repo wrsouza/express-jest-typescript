@@ -27,7 +27,7 @@ jobs:
       with:
         auth: ${{ secrets.GIST_SECRET }}
         gistID: 9b7d5aa0fe6ff3af0f45f9863f5e86a9
-        filename: express-jest-typescript_coverage.json
+        filename: express-jest-typescript__${{ env.BRANCH }}.json
         label: coverage
         message: ${{ env.COVERAGE }}
         namedLogo: jest
