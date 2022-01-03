@@ -16,5 +16,5 @@ jobs:
           node-version: 16.x
           cache: npm
       - npx lint-staged
-      - run npm test:coverage
+      - npm run test:coverage
       - npm run build
