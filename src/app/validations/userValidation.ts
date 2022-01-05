@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
 import { ValidationError } from '~/errors'
 import { mapValidation } from '~/app/dto'
+import { isValidObjectId } from 'mongoose'
 
 const userSchema = Yup.object({
   name: Yup.string().required('Name is required'),
@@ -31,5 +32,11 @@ export class UserValidation {
       .catch((err) => {
         throw new ValidationError(mapValidation(err))
       })
+  }
+
+  validateFindById(id: string) {
+    if (!isValidObjectId(id)) {
+      throw new ValidationError({ id: ['User Id invalid'] })
+    }
   }
 }
