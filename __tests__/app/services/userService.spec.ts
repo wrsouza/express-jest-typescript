@@ -3,7 +3,8 @@ import * as UserDto from '~/app/dto/users'
 import { UserRepository } from '~/app/repositories'
 import { UserValidation } from '~/app/validations'
 import { connect, clear, close } from '~/tests/db'
-import { ValidationError, AlreadyExistsError } from '~/errors'
+import { ValidationError, AlreadyExistsError, NotFoundError } from '~/errors'
+import { UserModel } from '~/app/schemas'
 
 describe('UserService list method', () => {
   let sut: UserService
@@ -106,6 +107,54 @@ describe('UserService create method', () => {
       expect.objectContaining({
         name: 'any_name',
         email: 'any_email'
+      })
+    )
+  })
+})
+
+describe('UserService findById method', () => {
+  let sut: UserService
+
+  beforeAll(async () => {
+    await connect()
+    sut = new UserService()
+  })
+  beforeEach(async () => {
+    jest.clearAllMocks()
+    await clear()
+  })
+  afterAll(async () => await close())
+
+  it('should throw Validation Error', async () => {
+    try {
+      await sut.findById('any_id')
+    } catch (err) {
+      expect(err).toBeInstanceOf(ValidationError)
+    }
+  })
+
+  it('should throw NotFound Error', async () => {
+    try {
+      await sut.findById('61d3a1f6d06d93fde46a0fcd')
+    } catch (err) {
+      expect(err).toBeInstanceOf(NotFoundError)
+    }
+  })
+
+  it('should method returns a user', async () => {
+    const data = {
+      name: 'any_name',
+      email: 'any_email',
+      password: 'any_password'
+    }
+    const user = await UserModel.create(data)
+    const result = await sut.findById(user._id)
+    expect(result).toEqual(
+      expect.objectContaining({
+        id: user._id,
+        name: 'any_name',
+        email: 'any_email',
+        admin: false
       })
     )
   })
