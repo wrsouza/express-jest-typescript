@@ -14,4 +14,10 @@ export class UserController {
     res.status(201)
     res.send(result)
   }
+
+  async show(req: Request, res: Response) {
+    const { id } = req.params
+    const result = await service.findById(id)
+    res.send(result)
+  }
 }

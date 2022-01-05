@@ -9,5 +9,6 @@ const use = (fn: any) => (req: Request, res: Response, next: NextFunction) =>
 router.get('/', use(new HomeController().index))
 router.get('/api/users', use(new UserController().index))
 router.post('/api/users', use(new UserController().store))
+router.get('/api/users/:id', use(new UserController().show))
 
 export default router
