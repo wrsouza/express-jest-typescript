@@ -1,8 +1,9 @@
+import bcrypt from 'bcryptjs'
+import { Document } from 'mongoose'
 import { connect, clear, close } from '~/tests/db'
 import { UserRepository } from '~/app/repositories'
 import { UserModel } from '~/app/schemas'
-import bcrypt from 'bcryptjs'
-import { AlreadyExistsError } from '~/errors'
+import { AlreadyExistsError, NotFoundError } from '~/errors'
 
 describe('UserRepository list method', () => {
   let sut: UserRepository
@@ -112,6 +113,48 @@ describe('UserRepository checkExists method', () => {
       await sut.checkExists('any_email')
     } catch (err) {
       expect(err).toBeInstanceOf(AlreadyExistsError)
+    }
+  })
+})
+
+describe('UserRepository findById', () => {
+  let sut: UserRepository
+
+  beforeAll(async () => {
+    await connect()
+    sut = new UserRepository()
+  })
+  beforeEach(async () => {
+    jest.clearAllMocks()
+    await clear()
+  })
+  afterAll(async () => await close())
+
+  it('should method returns NotFoundError', async () => {
+    try {
+      await sut.findById('61d3a1f6d06d93fde46a0fcd')
+    } catch (err) {
+      expect(err).toBeInstanceOf(NotFoundError)
+    }
+  })
+
+  it('shoud method return a user', async () => {
+    const data = {
+      name: 'any_name',
+      email: 'any_email',
+      password: 'any_password'
+    }
+    const user = await UserModel.create(data)
+    const result = await sut.findById(user._id)
+    expect(result).toBeInstanceOf(Document)
+    expect(result.toJSON()).toEqual(expect.objectContaining(data))
+  })
+
+  it('should method returns generic Error', async () => {
+    try {
+      await sut.findById('any_id')
+    } catch (err) {
+      expect(err).toBeInstanceOf(Error)
     }
   })
 })

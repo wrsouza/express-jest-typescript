@@ -1,5 +1,5 @@
 import { UserModel, User } from '~/app/schemas'
-import { AlreadyExistsError } from '~/errors'
+import { AlreadyExistsError, NotFoundError } from '~/errors'
 import { hashSync } from 'bcryptjs'
 
 export class UserRepository {
@@ -23,5 +23,13 @@ export class UserRepository {
     if (user) {
       throw new AlreadyExistsError('email', 'Email already exists')
     }
+  }
+
+  async findById(id: string) {
+    const user = await this.model.findById(id)
+    if (!user) {
+      throw new NotFoundError('User not exists')
+    }
+    return user
   }
 }
