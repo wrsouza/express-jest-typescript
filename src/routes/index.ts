@@ -1,9 +1,13 @@
-import { Router } from 'express'
+import { Request, Response, Router, NextFunction } from 'express'
 import { HomeController, UserController } from '~/app/controllers'
 
 const router = Router()
 
-router.get('/', new HomeController().index)
-router.get('/api/users', new UserController().index)
+const use = (fn: any) => (req: Request, res: Response, next: NextFunction) =>
+  Promise.resolve(fn(req, res, next)).catch(next)
+
+router.get('/', use(new HomeController().index))
+router.get('/api/users', use(new UserController().index))
+router.post('/api/users', use(new UserController().store))
 
 export default router

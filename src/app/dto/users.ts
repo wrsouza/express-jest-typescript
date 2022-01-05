@@ -18,3 +18,14 @@ export const userList = (
     createdAt: i.createdAt
   }))
 }
+
+export const userItem = (data: Document<any, any, User> & User & UserData) => {
+  const { _id: id, name, email, admin, createdAt } = data
+  return {
+    id,
+    name,
+    email,
+    admin,
+    createdAt
+  }
+}

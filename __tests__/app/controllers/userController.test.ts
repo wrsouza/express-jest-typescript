@@ -2,6 +2,7 @@ import { connect, clear, close } from '~/tests/db'
 import server from '~/server'
 import request from 'supertest'
 import { UserModel } from '~/app/schemas'
+import { UserRepository } from '~/app/repositories'
 
 describe('User List Api', () => {
   beforeAll(async () => await connect())
@@ -36,5 +37,56 @@ describe('User List Api', () => {
         })
       ])
     )
+  })
+})
+
+describe('User List Api', () => {
+  beforeAll(async () => await connect())
+  beforeEach(async () => await clear())
+  afterAll(async () => await close())
+
+  it('should post /api/users returns a new user', async () => {
+    const data = {
+      name: 'User Test',
+      email: 'user@test.com',
+      password: '123456'
+    }
+    const res = await request(server).post('/api/users').send(data)
+    expect(res.status).toBe(201)
+    expect(res.body).toHaveProperty('id')
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        name: 'User Test',
+        email: 'user@test.com'
+      })
+    )
+  })
+
+  it('should post /api/users returns Validation Error', async () => {
+    const data = {}
+    const res = await request(server).post('/api/users').send(data)
+    expect(res.status).toBe(400)
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        name: ['Name is required'],
+        email: ['Email is required'],
+        password: ['Password is required']
+      })
+    )
+  })
+
+  it('should post /api/users returns Server Error', async () => {
+    const data = {
+      name: 'User Test',
+      email: 'user@test.com',
+      password: '123456'
+    }
+    jest
+      .spyOn(UserRepository.prototype, 'create')
+      .mockImplementation(
+        async () => await Promise.reject(new Error('server error'))
+      )
+    const res = await request(server).post('/api/users').send(data)
+    expect(res.status).toBe(500)
   })
 })

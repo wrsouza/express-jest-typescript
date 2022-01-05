@@ -20,9 +20,20 @@ Install Dependencies
 ```sh
 npm install --silent
 ```
+
 Run Tests
 ```sh
 npm run test:coverage
+```
+
+Run Mongo in Container (Docker)
+```sh
+docker run -d --name mongodb -p 27017:27017 mongo:latest
+```
+
+Copy and Configure .env
+```sh
+cp .env.example .env
 ```
 
 Build Application

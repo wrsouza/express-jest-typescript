@@ -4,7 +4,7 @@ export interface User {
   name: string
   email: string
   password: string
-  admin: boolean
+  admin?: boolean
 }
 
 const schema = new Schema<User>(
@@ -12,7 +12,7 @@ const schema = new Schema<User>(
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    admin: { type: Boolean, default: false, required: true }
+    admin: { type: Boolean, default: false }
   },
   {
     timestamps: true

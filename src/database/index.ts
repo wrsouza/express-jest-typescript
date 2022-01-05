@@ -7,10 +7,7 @@ class Database {
   }
 
   async initMongoDb() {
-    mongoose
-      .connect(config.mongoUrl)
-      .then(() => console.log('Database connected!'))
-      .catch((err) => console.log(err))
+    await mongoose.connect(config.mongoUrl).catch((err) => console.error(err))
   }
 }
 
