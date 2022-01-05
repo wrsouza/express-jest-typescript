@@ -29,7 +29,7 @@ jobs:
         gistID: 9b7d5aa0fe6ff3af0f45f9863f5e86a9
         filename: express-jest-typescript__master.json
         label: coverage
-        message: ${{ env.COVERAGE }}
+        message: ${{ env.COVERAGE }}%
         namedLogo: jest
         color: blue
         logoColor: lightblue

@@ -1,5 +1,5 @@
 import { ErrorRequestHandler, Request, Response, NextFunction } from 'express'
-import { AlreadyExistsError, ValidationError } from '~/errors'
+import { AlreadyExistsError, NotFoundError, ValidationError } from '~/errors'
 
 export const errorHandler = (
   err: ErrorRequestHandler,
@@ -7,7 +7,11 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  if (err instanceof ValidationError || err instanceof AlreadyExistsError) {
+  if (
+    err instanceof ValidationError ||
+    err instanceof AlreadyExistsError ||
+    err instanceof NotFoundError
+  ) {
     res.status(err.statusCode)
     res.statusMessage = err.message
     res.send(err.data)
