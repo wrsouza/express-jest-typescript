@@ -138,7 +138,7 @@ describe('UserRepository findById', () => {
     }
   })
 
-  it('shoud method return a user', async () => {
+  it('should method return a user', async () => {
     const data = {
       name: 'any_name',
       email: 'any_email',
@@ -155,6 +155,98 @@ describe('UserRepository findById', () => {
       await sut.findById('any_id')
     } catch (err) {
       expect(err).toBeInstanceOf(Error)
+    }
+  })
+})
+
+describe('UserRepository update', () => {
+  let sut: UserRepository
+
+  beforeAll(async () => {
+    await connect()
+    sut = new UserRepository()
+  })
+  beforeEach(async () => {
+    jest.clearAllMocks()
+    await clear()
+  })
+  afterAll(async () => await close())
+
+  it('should method returns NotFoundError', async () => {
+    try {
+      await sut.update('61d3a1f6d06d93fde46a0fcd', {})
+    } catch (err) {
+      expect(err).toBeInstanceOf(NotFoundError)
+    }
+  })
+
+  it('should method return a updated user', async () => {
+    const data = {
+      name: 'any_name',
+      email: 'any_email',
+      password: 'any_password'
+    }
+    const user = await UserModel.create(data)
+    const updateData = {
+      name: 'any_update_name',
+      email: 'any_update_email',
+      password: 'any_update_password'
+    }
+    jest.spyOn(bcrypt, 'hashSync').mockReturnValueOnce('any_hash_password')
+    const result = await sut.update(user._id.toString(), updateData)
+    expect(result).toBeInstanceOf(Document)
+    expect(result.toJSON()).toEqual(
+      expect.objectContaining({
+        name: 'any_update_name',
+        email: 'any_update_email'
+      })
+    )
+    expect(result.password).toEqual('any_hash_password')
+  })
+
+  it('should method returns generic Error', async () => {
+    try {
+      await sut.update('any_id', {})
+    } catch (err) {
+      expect(err).toBeInstanceOf(Error)
+    }
+  })
+})
+
+describe('UserRepository destroy', () => {
+  let sut: UserRepository
+
+  beforeAll(async () => {
+    await connect()
+    sut = new UserRepository()
+  })
+  beforeEach(async () => {
+    jest.clearAllMocks()
+    await clear()
+  })
+  afterAll(async () => await close())
+
+  it('should method returns NotFoundError', async () => {
+    try {
+      await sut.destroy('61d3a1f6d06d93fde46a0fcd')
+    } catch (err) {
+      expect(err).toBeInstanceOf(NotFoundError)
+    }
+  })
+
+  it('should method delete a user', async () => {
+    const data = {
+      name: 'any_name',
+      email: 'any_email',
+      password: 'any_password'
+    }
+    const user = await UserModel.create(data)
+    await sut.destroy(user._id.toString())
+
+    try {
+      await sut.findById(user._id.toString())
+    } catch (err) {
+      expect(err).toBeInstanceOf(NotFoundError)
     }
   })
 })

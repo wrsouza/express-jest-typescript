@@ -20,4 +20,17 @@ export class UserController {
     const result = await service.findById(id)
     res.send(result)
   }
+
+  async update(req: Request, res: Response) {
+    const { id } = req.params
+    const result = await service.update(id, req.body)
+    res.send(result)
+  }
+
+  async destroy(req: Request, res: Response) {
+    const { id } = req.params
+    await service.destroy(id)
+    res.status(204)
+    res.send('Ok')
+  }
 }

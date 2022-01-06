@@ -159,3 +159,132 @@ describe('UserService findById method', () => {
     )
   })
 })
+
+describe('UserService update method', () => {
+  let sut: UserService
+
+  beforeAll(async () => {
+    await connect()
+    sut = new UserService()
+  })
+  beforeEach(async () => {
+    jest.clearAllMocks()
+    await clear()
+  })
+  afterAll(async () => await close())
+
+  it('should throw Validation Error if i pass wrong data', async () => {
+    // wrong id
+    try {
+      await sut.update('any_id', {})
+    } catch (err) {
+      expect(err).toBeInstanceOf(ValidationError)
+    }
+    // wrong email
+    try {
+      await sut.update('61d3a1f6d06d93fde46a0fcd', { email: 'any_email' })
+    } catch (err) {
+      expect(err).toBeInstanceOf(ValidationError)
+    }
+  })
+
+  it('should throw NotFound if i pass wrong id', async () => {
+    const userData = {
+      name: 'any_name',
+      email: 'any_email',
+      password: 'any_password'
+    }
+    jest
+      .spyOn(UserValidation.prototype, 'validateUpdate')
+      .mockImplementation(
+        jest
+          .fn()
+          .mockImplementation(
+            (userData: { name: string; email: string; password: string }) => {}
+          )
+      )
+    try {
+      await sut.update('61d3a1f6d06d93fde46a0fcd', userData)
+    } catch (err) {
+      expect(err).toBeInstanceOf(NotFoundError)
+    }
+  })
+
+  it('should return a user updated', async () => {
+    const userData = {
+      name: 'any_name',
+      email: 'any_email',
+      password: 'any_password'
+    }
+    const user = await UserModel.create(userData)
+    const userUpdateData = {
+      name: 'any_update_name',
+      email: 'any_update_email',
+      password: 'any_update_password'
+    }
+    jest
+      .spyOn(UserValidation.prototype, 'validateUpdate')
+      .mockImplementation(
+        jest
+          .fn()
+          .mockImplementation(
+            (userData: { name: string; email: string; password: string }) => {}
+          )
+      )
+    const result = await sut.update(user._id.toString(), userUpdateData)
+    expect(result).toEqual(
+      expect.objectContaining({
+        id: user._id,
+        name: 'any_update_name',
+        email: 'any_update_email'
+      })
+    )
+  })
+})
+
+describe('UserService destroy method', () => {
+  let sut: UserService
+
+  beforeAll(async () => {
+    await connect()
+    sut = new UserService()
+  })
+  beforeEach(async () => {
+    jest.clearAllMocks()
+    await clear()
+  })
+  afterAll(async () => await close())
+
+  it('should throw Validation Error if i pass wrong data', async () => {
+    try {
+      await sut.destroy('any_id')
+    } catch (err) {
+      expect(err).toBeInstanceOf(ValidationError)
+    }
+  })
+
+  it('should throw NotFound if i pass wrong id', async () => {
+    try {
+      await sut.destroy('61d3a1f6d06d93fde46a0fcd')
+    } catch (err) {
+      expect(err).toBeInstanceOf(NotFoundError)
+    }
+  })
+
+  it('should delete a user', async () => {
+    const data = {
+      name: 'any_name',
+      email: 'any_email',
+      password: 'any_password'
+    }
+    const user = await UserModel.create(data)
+    const result = await sut.destroy(user._id.toString())
+    expect(result).toBe(undefined)
+
+    try {
+      await sut.findById(user._id.toString())
+    } catch (err) {
+      expect(err).toBeInstanceOf(NotFoundError)
+    }
+  })
+})

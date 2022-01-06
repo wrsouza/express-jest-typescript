@@ -25,4 +25,16 @@ export class UserService {
     const result = await this.repository.findById(id)
     return userItem(result)
   }
+
+  async update(id: string, data: any) {
+    this.validation.validateFindById(id)
+    await this.validation.validateUpdate(data)
+    const result = await this.repository.update(id, data)
+    return userItem(result)
+  }
+
+  async destroy(id: string) {
+    this.validation.validateFindById(id)
+    await this.repository.destroy(id)
+  }
 }

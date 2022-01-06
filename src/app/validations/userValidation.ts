@@ -12,22 +12,45 @@ const userSchema = Yup.object({
     .max(20, 'Maximum of 20 characters')
 })
 
+const userUpdateSchema = Yup.object({
+  name: Yup.string(),
+  email: Yup.string().email('Invalid Email'),
+  password: Yup.string()
+    .min(6, 'Minimum of 6 characters')
+    .max(20, 'Maximum of 20 characters')
+})
+
 interface UserStore {
-  id?: string
   name: string
   email: string
   password: string
 }
 
+interface UserUpdate {
+  name?: string
+  email?: string
+  password?: string
+}
+
 export class UserValidation {
   schemaStore: typeof userSchema
+  schemaUpdate: typeof userUpdateSchema
 
   constructor() {
     this.schemaStore = userSchema
+    this.schemaUpdate = userUpdateSchema
   }
 
   async validateStore(data: UserStore) {
     return this.schemaStore
+      .validate(data, { abortEarly: false })
+      .catch((err) => {
+        throw new ValidationError(mapValidation(err))
+      })
+  }
+
+  async validateUpdate(data: UserUpdate) {
+    return this.schemaUpdate
       .validate(data, { abortEarly: false })
       .catch((err) => {
         throw new ValidationError(mapValidation(err))

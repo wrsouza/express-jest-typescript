@@ -10,5 +10,7 @@ router.get('/', use(new HomeController().index))
 router.get('/api/users', use(new UserController().index))
 router.post('/api/users', use(new UserController().store))
 router.get('/api/users/:id', use(new UserController().show))
+router.put('/api/users/:id', use(new UserController().update))
+router.delete('/api/users/:id', use(new UserController().destroy))
 
 export default router

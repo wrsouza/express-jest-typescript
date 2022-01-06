@@ -32,4 +32,19 @@ export class UserRepository {
     }
     return user
   }
+
+  async update(id: string, data: any) {
+    if (data.password) {
+      data.password = hashSync(data.password, 8)
+    }
+    await this.model.findOneAndUpdate({ _id: id }, data)
+    return await this.findById(id)
+  }
+
+  async destroy(id: string) {
+    const user = await this.model.findByIdAndDelete(id)
+    if (!user) {
+      throw new NotFoundError('User not exists')
+    }
+  }
 }
